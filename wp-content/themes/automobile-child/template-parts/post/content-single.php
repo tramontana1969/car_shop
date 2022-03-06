@@ -14,18 +14,16 @@
             <div class="article-text">
                 <h3 class="single-post"><?php the_title();?></h3>
                 <div class="metabox">
-                    <span class="entry-author"><i class="fas fa-user"></i><?php the_author(); ?></span>
                     <span class="entry-date"><i class="fas fa-calendar-alt"></i><?php echo esc_html( get_the_date()); ?></span>
-                    <span class="entry-comments"><i class="fas fa-comments"></i><?php comments_number( __('0 Comments','automobile-shop'), __('0 Comments','automobile-shop'), __('% Comments','automobile-shop') ); ?></span>
                 </div>
                 <?php if(has_post_thumbnail()) { ?>
                     <?php the_post_thumbnail(); ?>
                 <?php }?>
                 <p><?php the_content(); ?></p>
-                <p><?php echo get_post_meta($post->ID, 'Price', true);; ?></p>
-                <p><?php echo get_post_meta($post->ID, 'Year', true);; ?></p>
+                <p>Price: <?php echo get_post_meta($post->ID, 'Price', true);; ?></p>
+                <p>Year: <?php echo get_post_meta($post->ID, 'Year', true);; ?></p>
                 <p><?php $taxonomy = get_the_taxonomies($post->ID);
-                    echo print_r($taxonomy['marks'], true); ?></p>
+                    echo print_r(($taxonomy['marks']), true); ?></p>
                 <p><?php echo print_r($taxonomy['models'], true)?></p>
                 <div class="single-post-tags mt-3"><?php the_tags(); ?></div>
                 <hr>
