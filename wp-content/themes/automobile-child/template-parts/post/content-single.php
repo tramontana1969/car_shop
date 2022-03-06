@@ -24,6 +24,9 @@
                 <p><?php the_content(); ?></p>
                 <p><?php echo get_post_meta($post->ID, 'Price', true);; ?></p>
                 <p><?php echo get_post_meta($post->ID, 'Year', true);; ?></p>
+                <p><?php $taxonomy = get_the_taxonomies($post->ID);
+                    echo print_r($taxonomy['marks'], true); ?></p>
+                <p><?php echo print_r($taxonomy['models'], true)?></p>
                 <div class="single-post-tags mt-3"><?php the_tags(); ?></div>
                 <hr>
             </div>
