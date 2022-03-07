@@ -30,3 +30,9 @@ add_action( 'manage_cars_posts_custom_column', function ( $column_name ) {
     }
 } );
 
+add_filter( 'bulk_actions-edit-cars', 'register_my_bulk_actions' );
+function register_my_bulk_actions($bulk_actions) {
+    $bulk_actions['add_to_sales'] = __( 'Add to Sales', 'add_to_sales');
+    return $bulk_actions;
+}
+
