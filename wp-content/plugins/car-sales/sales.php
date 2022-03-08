@@ -8,31 +8,38 @@
  */
 
 
-add_action( 'admin_head', 'true_colored_admin_bar_72aee6' );
-
-function true_colored_admin_bar_72aee6(){
-    echo '<style>#wpadminbar{background-color: #72aee6;}</style>'; // выводим стили
+add_action('save_post_cars', 'set_default_sale_status');
+function set_default_sale_status() {
+    $id = get_the_ID();
+    update_post_meta($id, 'sales', 'off');
 }
 
 add_filter( 'manage_cars_posts_columns', function ( $columns ) {
     $my_columns = [
         'sale' => 'Sale',
     ];
-
     return $columns +  $my_columns;
 } );
 
 add_action( 'manage_cars_posts_custom_column', function ( $column_name ) {
-    if ( $column_name === 'sale') {
-        ?>
-        <input type="checkbox" />
-        <?php
+    $id = get_the_ID();
+    $sale_status_array = array_values(get_post_meta($id,'sales'));
+
+    for ($i = 0; $i < count($sale_status_array); $i++) {
+        $sale_status = $sale_status_array[$i];
+    }
+
+    if ( $column_name === 'sale' && $sale_status == 'off') {
+        ?><form method="post">
+            <input type="checkbox" name="sales" />
+            <input type="submit" value="Add to Sales"/>
+        </form><?php
+    }
+    elseif ($column_name === 'sale' && $sale_status == 'on') {
+//        update_post_meta($id, 'sales', 'on');
+        ?><form method="post">
+            <input type="checkbox" name="sales" checked/>
+            <input type="submit" value="Remove form Sales"/>
+        </form><?php
     }
 } );
-
-add_filter( 'bulk_actions-edit-cars', 'register_my_bulk_actions' );
-function register_my_bulk_actions($bulk_actions) {
-    $bulk_actions['add_to_sales'] = __( 'Add to Sales', 'add_to_sales');
-    return $bulk_actions;
-}
-
