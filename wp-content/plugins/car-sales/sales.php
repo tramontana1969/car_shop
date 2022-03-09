@@ -37,15 +37,6 @@ function checkboxes_methods($column_name) {
         else if ($_SERVER['REQUEST_METHOD'] == 'POST' && $sale_status == 'on' && $_POST['sale'] == $id) {
             update_post_meta($id, 'sales', 'off');
         }
-        echo "<form method='post'>";
-//        print_r(get_post($id));
-        $post_IDS = array();
-
-        while ( have_posts() ) : the_post();
-            $post_ID = get_the_ID();
-            array_push($post_IDS, $post_ID);
-        endwhile;
-        print_r(get_post_meta($id,'sales'));
         echo "<input id='sale_checkbox_$id' onclick='change_sale_status_js($id)' type='checkbox' name='_sales[$id]' value='$id'/>";
         if ( $sale_status == 'on') {
             echo "on Sale";
@@ -53,7 +44,6 @@ function checkboxes_methods($column_name) {
         else {
             echo 'add to Sales';
         }
-        echo "</form>";
     }
 };
 
