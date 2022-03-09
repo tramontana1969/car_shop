@@ -14,7 +14,6 @@ function set_default_sale_status() {
     update_post_meta($id, 'sales', 'off');
 }
 
-
 add_action( 'manage_edit-cars_columns', function ( $columns ) {
     $my_columns = [
         'sale' => 'Sale',
@@ -22,45 +21,51 @@ add_action( 'manage_edit-cars_columns', function ( $columns ) {
     return $columns + $my_columns ;
 } );
 
-
 add_filter( 'manage_cars_posts_custom_column', 'checkboxes_methods');
 function checkboxes_methods($column_name) {
     $id = get_the_ID();
-    $post = acf_get_posts();
     $sale_status_array = array_values(get_post_meta($id,'sales'));
 
     for ($i = 0; $i < count($sale_status_array); $i++) {
         $sale_status = $sale_status_array[$i];
     }
+
     if ($column_name == 'sale') {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' && $sale_status == 'off' && $_POST['_sales'][$id] == $id) {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && $sale_status == 'off' && $_POST['sale'] == $id ) {
             update_post_meta($id, 'sales', 'on');
-            echo "<p>Added to sales</p>";
         }
-        else if ($_SERVER['REQUEST_METHOD'] == 'POST' && $sale_status == 'on' && $_POST['_sales'][$id] == $id) {
+        else if ($_SERVER['REQUEST_METHOD'] == 'POST' && $sale_status == 'on' && $_POST['sale'] == $id) {
             update_post_meta($id, 'sales', 'off');
-            echo "<p>Removed from sales</p>";
+        }
+        echo "<form method='post'>";
+        echo "<input id='sale_checkbox_$id' onclick='change_sale_status_js($id)' type='checkbox' name='_sales[$id]' value='$id'/>";
+        if ( $sale_status == 'on') {
+            echo "on Sale";
         }
         else {
-            if($post[0] == get_post()) {
-                echo "<form method='post'>";
-                if ( $sale_status == 'off') {
-                    echo "<input type='hidden'/>";
-                }
-                elseif ($sale_status == 'on') {
-                    echo "<input type='hidden'>";
-                }
-                echo "</form>";
-            }
-            echo "<form method='post'>";
-            if ( $sale_status == 'off') {
-                echo "<input id='empty_checkbox_$id' type='checkbox' name='_sales[$id]' value='$id'/>";
-            }
-            elseif ($sale_status == 'on') {
-                echo "<input id='checked_checkbox_$id' type='checkbox' name='_sales[$id]' value='$id' checked/>";
-            }
-            echo "<input type='submit' value='Change status' />";
-            echo "</form>";
+            echo 'add to Sales';
         }
+        echo "</form>";
     }
 };
+
+add_filter('admin_enqueue_scripts', 'add_js');
+function add_js() {
+    wp_enqueue_script( "change_sale_status_js", plugins_url('/car-sales/js/sales.js'));
+}
+
+add_filter( 'wp_enqueue_scripts', 'css_to_wp_head');
+function css_to_wp_head() {
+    $id = get_the_ID();
+    $sale_status_array = array_values(get_post_meta($id,'sales'));
+    for ($i = 0; $i < count($sale_status_array); $i++) {
+        $sale_status = $sale_status_array[$i];
+    }
+    if ($sale_status == 'on') {
+//        wp_register_style( 'sales', plugins_url('/car-sales/css/sales.css'));
+//        wp_enqueue_style( 'sales');
+        wp_register_style( 'sales', plugins_url('/car-sales/css/sales.css'));
+        wp_enqueue_style( "sale", plugins_url('/car-sales/css/sales.css'));
+
+    }
+}
