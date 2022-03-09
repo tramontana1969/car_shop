@@ -11,7 +11,7 @@
 <div class="col-lg-4 col-md-4">
     <article id="post-<?php the_ID(); ?>" <?php post_class('inner-service grid-layout'); ?>>
         <div class="article_content">
-            <h3 id="title_"><?php the_title(); ?></h3>
+            <h3 id="title_<?php the_ID(); ?>"><?php the_title(); ?></h3>
             <div class="post-date">
                 <span class="entry-date"><span><?php echo esc_html( get_the_date()); ?></span></span>
             </div>

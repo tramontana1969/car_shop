@@ -38,6 +38,14 @@ function checkboxes_methods($column_name) {
             update_post_meta($id, 'sales', 'off');
         }
         echo "<form method='post'>";
+//        print_r(get_post($id));
+        $post_IDS = array();
+
+        while ( have_posts() ) : the_post();
+            $post_ID = get_the_ID();
+            array_push($post_IDS, $post_ID);
+        endwhile;
+        print_r(get_post_meta($id,'sales'));
         echo "<input id='sale_checkbox_$id' onclick='change_sale_status_js($id)' type='checkbox' name='_sales[$id]' value='$id'/>";
         if ( $sale_status == 'on') {
             echo "on Sale";
@@ -56,16 +64,21 @@ function add_js() {
 
 add_filter( 'wp_enqueue_scripts', 'css_to_wp_head');
 function css_to_wp_head() {
-    $id = get_the_ID();
-    $sale_status_array = array_values(get_post_meta($id,'sales'));
-    for ($i = 0; $i < count($sale_status_array); $i++) {
-        $sale_status = $sale_status_array[$i];
-    }
-    if ($sale_status == 'on') {
-//        wp_register_style( 'sales', plugins_url('/car-sales/css/sales.css'));
-//        wp_enqueue_style( 'sales');
-        wp_register_style( 'sales', plugins_url('/car-sales/css/sales.css'));
-        wp_enqueue_style( "sale", plugins_url('/car-sales/css/sales.css'));
+    $post_IDS = array();
+    while ( have_posts() ) : the_post();
+        $post_ID = get_the_ID();
+        array_push($post_IDS, $post_ID);
+    endwhile;
 
+    foreach ($post_IDS as $post_ID) {
+        if (get_post_meta($post_ID,'sales')[0] == 'on') {
+            echo "
+            <style>
+                #title_$post_ID {
+                    color: red;
+                }
+            </style>
+            ";
+        }
     }
 }
