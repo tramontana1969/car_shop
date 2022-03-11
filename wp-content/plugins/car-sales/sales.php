@@ -37,13 +37,9 @@ function checkboxes_methods($column_name) {
         else if ($_SERVER['REQUEST_METHOD'] == 'POST' && $sale_status == 'on' && $_POST['sale'] == $id) {
             update_post_meta($id, 'sales', 'off');
         }
-        echo "<input id='sale_checkbox_$id' onclick='change_sale_status_js($id)' type='checkbox' name='_sales[$id]' value='$id'/>";
-        if ( $sale_status == 'on') {
-            echo "on Sale";
-        }
-        else {
-            echo 'add to Sales';
-        }
+        $sale = get_post_meta($id,'sales')[0];
+        $checked = $sale === "on"?"checked='true'":"";
+        echo "<input id='sale_checkbox_$id' onclick='change_sale_status_js($id)' type='checkbox' name='_sales[$id]' value='$id' $checked/>";
     }
 };
 

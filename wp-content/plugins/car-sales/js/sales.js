@@ -6,7 +6,3 @@ function change_sale_status_js(id) {
     xhr.send(data);
     location.reload();
 }
-
-function change_sale_post_title_color() {
-    $title = document.getElementById()
-}
